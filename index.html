@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Web Scraping Tanks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #333; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Projet Web Scraping Tanks</h1>
+    <p>Ce projet consiste à extraire des informations sur des tanks à partir d'une page web, en utilisant <strong>Python</strong> et les bibliothèques <strong>pandas</strong>, <strong>requests</strong> et <strong>BeautifulSoup</strong>.</p>
+
+    <h2>Code</h2>
+    <pre><code>import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+import re
+import csv
+
+URL ="https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+response = requests.get(URL)
+# ... </code></pre>
+
+    <h2>Explication</h2>
+    <p>Le script commence par récupérer le contenu de la page, puis utilise <code>BeautifulSoup</code> pour analyser le HTML et extraire les informations sur les tanks. Il sauvegarde les résultats dans un fichier CSV.</p>
+
+    <h2>Résultats</h2>
+    <p>Les données extraites incluent les modèles de tanks, leur état, et des liens vers des images ou vidéos associées.</p>
+</body>
+</html>
