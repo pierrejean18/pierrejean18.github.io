@@ -1,4 +1,4 @@
-# Extraction d'informations sur les tanks https://pierrejean18.github.io/
+# Extraction d'informations sur les tanks
 
 ## Description du projet
 
