@@ -1,5 +1,8 @@
 # Extraction d'informations sur les tanks
 
+pierrejean18.github.io
+
+
 ## Description du projet
 
 Ce projet vise à automatiser l'extraction d'informations sur les tanks à partir d'une page web spécifique, en fournissant un support concret pour le secteur militaire. Les données extraites comprennent le modèle du tank, son état, ainsi que des liens vers des ressources multimédias (images ou vidéos) associées.
