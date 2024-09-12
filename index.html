@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projet Web Scraping Tanks</title>
+    <title>Extraction d'Informations sur les Tanks</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; }
+        h1 { color: #2c3e50; }
+        h2 { color: #16a085; }
+        p { color: #34495e; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <h1>Projet Web Scraping Tanks</h1>
-    <p>Ce projet consiste à extraire des informations sur des tanks à partir d'une page web, en utilisant <strong>Python</strong> et les bibliothèques <strong>pandas</strong>, <strong>requests</strong> et <strong>BeautifulSoup</strong>.</p>
+    <h1>Extraction d'Informations sur les Tanks</h1>
+
+    <h2>Description du projet</h2>
+    <p>
+        Ce projet vise à automatiser l'extraction d'informations sur les tanks à partir d'une 
+        <a href="https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html" target="_blank">page web spécifique</a>, 
+        en fournissant un support concret pour le secteur militaire. Les données extraites comprennent le modèle du tank, son état, ainsi que des liens vers des ressources multimédias (images ou vidéos) associées.
+    </p>
+
+    <h2>Fonctionnement</h2>
+    <p>
+        Le script Python utilise les bibliothèques <code>requests</code> pour récupérer le contenu HTML de la page, et <code>BeautifulSoup</code> pour parser et naviguer dans la structure HTML. La fonction principale, <code>extract_tank_info</code>, applique des expressions régulières pour identifier et extraire les détails pertinents de chaque modèle de tank.
+    </p>
+    <p>
+        Le script parcourt toutes les listes non ordonnées (<code>&lt;ul&gt;</code>) sur la page et traite chaque élément liste (<code>&lt;li&gt;</code>), séparant le modèle du tank de ses caractéristiques additionnelles, comme l'état et les liens multimédias.
+    </p>
+
+    <h2>Dictionnaire de données</h2>
+    <p>
+        Les informations collectées sont organisées dans un dictionnaire Python où chaque clé correspond à un modèle de tank, et les valeurs contiennent son état et les liens associés.
+    </p>
 
     <h2>Code</h2>
     <pre><code>import pandas as pd
@@ -23,12 +47,56 @@ import csv
 
 URL ="https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
 response = requests.get(URL)
-# ... </code></pre>
 
-    <h2>Explication</h2>
-    <p>Le script commence par récupérer le contenu de la page, puis utilise <code>BeautifulSoup</code> pour analyser le HTML et extraire les informations sur les tanks. Il sauvegarde les résultats dans un fichier CSV.</p>
+# Vérification du statut de la requête
+if response.status_code == 200:
+    soup = BeautifulSoup(response.content, 'html.parser')
+    def extract_tank_info(text):
+        pattern = re.compile(r'\(([^,]+), ([^)]+)\)')
+        matches = pattern.findall(text)
+        return matches
+    
+    tank_links = {}
+    tank_sections = soup.find_all('ul')
+    
+    for section in tank_sections:
+        tank_items = section.find_all('li')
+        # Extraction des données des tanks
+        for tank_item in tank_items:
+            tank_info_text = tank_item.text.strip()
+            if ':' in tank_info_text:
+                tank_model, tank_details = tank_info_text.split(':', 1)
+                tank_model = tank_model.strip()
+            else:
+                tank_model = tank_info_text.strip()
+                tank_details = ""
+            
+            tanks = extract_tank_info(tank_details)
+            
+            links = tank_item.find_all('a', href=True)
+            
+            if tank_model not in tank_links:
+                tank_links[tank_model] = []
+            
+            for (tank_id, tank_status), link in zip(tanks, links):
+                tank_links[tank_model].append((tank_status.strip(), link['href']))
+    
+    # Sauvegarde des résultats dans un fichier CSV
+    with open('tank_data.csv', mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Modèle du tank", "État du tank", "Lien vers l'image ou vidéo"])
+        
+        for tank_model, tanks in tank_links.items():
+            for tank_status, link in tanks:
+                writer.writerow([tank_model, tank_status, link])
+    
+    print("Les données des tanks ont été enregistrées dans 'tank_data.csv'.")
 
-    <h2>Résultats</h2>
-    <p>Les données extraites incluent les modèles de tanks, leur état, et des liens vers des images ou vidéos associées.</p>
+else:
+    print("La requête a échoué avec le code :", response.status_code)</code></pre>
+
+    <h2>Conclusion</h2>
+    <p>Ce projet permet de démontrer comment l'extraction de données web peut être automatisée pour répondre à des besoins spécifiques, notamment dans le secteur militaire.</p>
+
 </body>
 </html>
